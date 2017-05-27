@@ -57,7 +57,7 @@ main {
     <main id="root"></main>
     <script>
 function getRandomChuckNorrisJoke() {
-  return getJson('http://api.icndb.com/jokes/random?escape=javascript')
+  return getJson('https://api.icndb.com/jokes/random?escape=javascript')
     .then(data => data.value.joke)
 }
 
