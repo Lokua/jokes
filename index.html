@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Joke Machine</title>
+    <meta name="viewport" content="width=device-width" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,900" rel="stylesheet">
+    <style>
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  font-size: 1em;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+}
+
+.quote-machine {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  padding: 3em;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 3em;
+  font-weight: 900;
+  opacity: 1;
+  transition: opacity 0.25s, font-size 0.25s;
+}
+
+@media only screen and (max-width: 700px) {
+  .quote-machine {
+    padding: 2em;
+    font-size: 2em;
+  }
+}
+
+.loading {
+  opacity: 0;
+}
+    </style>
+  </head>
+  <body>
+    <main id="root"></main>
+    <script>
+function getRandomChuckNorrisJoke() {
+  return getJson('http://api.icndb.com/jokes/random?escape=javascript')
+    .then(data => data.value.joke)
+}
+
+quoteMachine({
+  element: document.getElementById('root'),
+  getQuote: getRandomChuckNorrisJoke
+})
+
+function quoteMachine(config) {
+  const blockQuote = createBlockQuote()
+  config.element.appendChild(blockQuote)
+
+  render()
+  blockQuote.addEventListener('click', render)
+
+  function render(event) {
+    blockQuote.classList.add('loading')
+    config.getQuote().then(quote => {
+      blockQuote.classList.remove('loading')
+      blockQuote.textContent = quote
+    })
+  }
+
+  function createBlockQuote() {
+    const element = document.createElement('blockquote')
+    element.classList.add('quote-machine')
+    return element
+  }
+}
+
+function getJson(url) {
+  return fetch(url).then(res => res.json())
+}
+    </script>
+  </body>
+</html>
